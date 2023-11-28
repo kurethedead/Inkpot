@@ -137,18 +137,18 @@ void Ink::FVariableState::SetJsonToken(const TMap<FString, TSharedPtr<FJsonValue
 		const TSharedPtr<FJsonValue>* loadedTokenPtrPtr = JsonToken.Find(variableName);
 		if (loadedTokenPtrPtr != nullptr && (*loadedTokenPtrPtr).IsValid())
 		{
-			_globalVariables[variableName] = Ink::FJsonSerialisation::JsonTokenToRuntimeObject(**loadedTokenPtrPtr);
+			SetGlobal(variableName, Ink::FJsonSerialisation::JsonTokenToRuntimeObject(**loadedTokenPtrPtr));
 		}
 		else
 		{
-			_globalVariables[variableName] = variablePair.Value;
+			SetGlobal(variableName, variablePair.Value);
 		}
 	}
 }
 
-
 void Ink::FVariableState::WriteJson(TJsonWriter<>* Writer)
 {
+	Writer->WriteIdentifierPrefix("variablesState");
 	Writer->WriteObjectStart();
 	for (const auto& pair: _globalVariables)
 	{
@@ -165,6 +165,7 @@ void Ink::FVariableState::WriteJson(TJsonWriter<>* Writer)
 			}
 		}
 
+		Writer->WriteIdentifierPrefix(key);
 		Ink::FJsonSerialisation::WriteRuntimeObject(Writer, value);
 	}
 	Writer->WriteObjectEnd();

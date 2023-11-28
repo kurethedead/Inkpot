@@ -49,6 +49,7 @@ FString Ink::FStoryState::ToJson() const
 	FString jsonString;
 	TSharedPtr<TJsonWriter<>> writer = TJsonWriterFactory<>::Create(&jsonString);
 	WriteJson(writer.Get());
+	writer->Close();
 	return jsonString;
 }
 
@@ -78,7 +79,7 @@ void Ink::FStoryState::LoadJSONObj(const FJsonObject& InJSONObj)
 	checkf(jSaveVersion.IsValid(), TEXT("ink save format incorrect, can't load!"));
 
 	const int32 saveVersion = static_cast<int32>(jSaveVersion->AsNumber());
-	checkf(saveVersion < MinCompatibleLoadVersion, TEXT("Ink save format isn't compatible with the current version (saw '%d', but minimum is '%d'), so can't load."), saveVersion, MinCompatibleLoadVersion);
+	checkf(saveVersion > MinCompatibleLoadVersion, TEXT("Ink save format isn't compatible with the current version (saw '%d', but minimum is '%d'), so can't load."), saveVersion, MinCompatibleLoadVersion);
 
 	/*	Flows: Always exists in latest format (even if there's just one default)
 		but this map doesn't exist in previous format */
@@ -643,6 +644,7 @@ void Ink::FStoryState::WriteJson(TJsonWriter<>* Writer) const
 {
 	Writer->WriteObjectStart();
 
+	/*
 	// Flows
 	Writer->WriteIdentifierPrefix("flows");
 	Writer->WriteObjectStart();
@@ -662,7 +664,7 @@ void Ink::FStoryState::WriteJson(TJsonWriter<>* Writer) const
 	Writer->WriteObjectEnd();
 	Writer->WriteObjectEnd(); // end of flows
 
-	WriteProperty(Writer, "currentFlowName", CurrentFlow->GetName());
+	WriteProperty(Writer, "currentFlowName", CurrentFlow->GetName());*/
 	VariableState->WriteJson(Writer);
 
 	Writer->WriteIdentifierPrefix("evalStack");
@@ -711,9 +713,9 @@ template<typename T>
 void Ink::FStoryState::WriteProperty(TJsonWriter<>* Writer, const FString& PropertyName, T PropertyValue) const
 {
 	Writer->WriteIdentifierPrefix(PropertyName);
-	Writer->WriteObjectStart();
+	//Writer->WriteObjectStart();
 	Writer->WriteValue(PropertyValue);
-	Writer->WriteObjectEnd();
+	//Writer->WriteObjectEnd();
 }
 
 void Ink::FStoryState::ResetErrors()
