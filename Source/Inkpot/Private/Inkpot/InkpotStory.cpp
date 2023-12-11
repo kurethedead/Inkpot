@@ -291,7 +291,7 @@ void UInkpotStory::ObserveVariable( const FString& InVariable, TSharedPtr<FStory
 	StoryInternal->ObserveVariable( InVariable, InObserver );
 }
 
-void UInkpotStory::SetOnVariableChange( const FOnVariableChange& InDelegate, const FString &InVariable )
+void UInkpotStory::SetOnVariableChange( FOnInkpotVariableChange InDelegate, const FString &InVariable )
 {
 	TSharedPtr<FStoryVariableObserver> observer = MakeShared<FStoryVariableObserver>();
 	observer->BindWeakLambda
@@ -552,3 +552,27 @@ TArray<FString> UInkpotStory::GetNamedContent(TSharedPtr<Ink::FContainer> InCont
 
 	return keys;
 }
+
+void UInkpotStory::BindExternalFunction( const FString &InFunctionName, FInkpotExternalFunction InFunction, bool bInLookAheadSafe  )
+{
+	TSharedPtr<FStoryExternalFunction> function = MakeShared<FStoryExternalFunction>();
+	function->BindWeakLambda
+	(
+		InFunction.GetUObject(), [this, InFunction] (const TArray<Ink::FValueType> &InArguments) -> TSharedPtr<Ink::FValueType>
+		{
+			TArray<FInkpotValue> arguments;
+			for(auto &argument : InArguments )
+				arguments.Add( argument );
+
+			FInkpotValue value = InFunction.Execute( arguments );
+			return *value;
+		}
+	);
+	StoryInternal->BindExternalFunctionGeneral( InFunctionName, function, bInLookAheadSafe );
+}
+
+void UInkpotStory::UnbindExternalFunction( const FString &InFunctionName )
+{
+	StoryInternal->UnbindExternalFunction( InFunctionName );
+}
+
