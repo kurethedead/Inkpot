@@ -616,7 +616,7 @@ bool FInkTests::RunTest(const FString& InkTestName)
 								const TArray<FString> &actualTags = story->GetCurrentTags();
 								if (expectedTags->Num() != actualTags.Num())
 								{
-									INKPOT_ERROR("%s : TEST_CURRENT_TAGS Tag count not equal: %s, \nExpected: %d\nActual__: %d", *InkTestName, expectedTags->Num(), actualTags.Num());
+									INKPOT_ERROR("%s : TEST_CURRENT_TAGS Tag count not equal: \nExpected: %d\nActual__: %d", *InkTestName, expectedTags->Num(), actualTags.Num());
 									return false;
 								}
 
@@ -625,7 +625,7 @@ bool FInkTests::RunTest(const FString& InkTestName)
 									TSharedPtr<FJsonValue> value = (*expectedTags)[i];
 									if (value->Type != EJson::String)
 									{
-										INKPOT_ERROR("%s : TEST_CURRENT_TAGS Tag is not a string, check test script JSON", *InkTestName, expectedTags->Num(), actualTags.Num());
+										INKPOT_ERROR("%s : TEST_CURRENT_TAGS Tag is not a string, check test script JSON", *InkTestName);
 										return false;
 									}
 
@@ -646,7 +646,7 @@ bool FInkTests::RunTest(const FString& InkTestName)
 								TArray<FString> actualTags = story->GlobalTags();
 								if (expectedTags->Num() != actualTags.Num())
 								{
-									INKPOT_ERROR("%s : TEST_STORY_GLOBAL_TAGS Tag count not equal: %s, \nExpected: %d\nActual__: %d", *InkTestName, expectedTags->Num(), actualTags.Num());
+									INKPOT_ERROR("%s : TEST_STORY_GLOBAL_TAGS Tag count not equal: \nExpected: %d\nActual__: %d", *InkTestName, expectedTags->Num(), actualTags.Num());
 									return false;
 								}
 
@@ -682,7 +682,7 @@ bool FInkTests::RunTest(const FString& InkTestName)
 									{
 										if (expectedTags.Num() != actualTags.Num())
 										{
-											INKPOT_ERROR("%s : TEST_TAG_FOR_PATH Tag count not equal: %s, \nExpected: %d\nActual__: %d", *InkTestName, expectedTags.Num(), actualTags.Num());
+											INKPOT_ERROR("%s : TEST_TAG_FOR_PATH Tag count not equal: \nExpected: %d\nActual__: %d", *InkTestName, expectedTags.Num(), actualTags.Num());
 											return false;
 										}
 
